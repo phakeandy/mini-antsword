@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>mini-antSword</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <style>
+            body {
+                margin: 0;
+                height: 100vh;
+                background-color: #eee;
+            }
+            .white {
+                background-color: white;
+            }
+
+            /* debug */
+            /* * {
+                border: solid black 1px;
+            } */
+            .text-center {
+                text-align: center;
+            }
+            .flex {
+                display: flex;
+            }
+            .flex1 {
+                flex: 1;
+            }
+            .mgr6 {
+                margin-right: 6px;
+            }
+            .mgt6 {
+                margin-top: 6px;
+            }
+        </style>
+    </head>
+    <body class="flex">
+        <!-- sidebar -->
+        <div style="width: 120px" class="white mgr6"></div>
+
+        <!-- main -->
+        <div class="flex1" style="overflow: auto">
+            <!-- header -->
+            <div style="height: 40px" class="white text-center">
+                Welcome to mini-antSword
+            </div>
+
+            <!-- 功能区 -->
+
+            <button id="invoke-button">Invoke Rust Command</button>
+            <p id="message"></p>
+
+            <div class="white mgt6">
+                <form id="connectToTarget">
+                    <label for="url">URL: </label>
+                    <input type="text" name="url" id="url" required />
+                    <br />
+                    <label for="password">密码: </label>
+                    <input type="text" name="password" id="password" required />
+                    <br />
+                    <label for="command">命令: </label>
+                    <input type="text" name="command" id="command" />
+                    <br />
+                    <button type="submit">确定</button>
+                </form>
+            </div>
+            <div id="respons-message" class="white mgt6"></div>
+        </div>
+
+        <script src="/src/main.js" type="module"></script>
+        <script>
+            // 表单持久化
+            window.onload = function () {
+                const url = document.getElementById("url");
+                const password = document.getElementById("password");
+                const command = document.getElementById("command");
+
+                url.value = localStorage.getItem("url") || "";
+                password.value = localStorage.getItem("password") || "";
+                command.value = localStorage.getItem("command") || "";
+            };
+
+            // 当输入改变时，存储数据到 localStorage
+            document
+                .querySelectorAll('input[type="text"], input[type="password"]')
+                .forEach(function (input) {
+                    input.addEventListener("input", function () {
+                        localStorage.setItem(this.name, this.value);
+                    });
+                });
+        </script>
+    </body>
+</html>
