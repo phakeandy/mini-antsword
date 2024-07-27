@@ -1,7 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use mini_antsword_ts::core::rce;
+pub mod core;
+pub mod utils;
+
+use core::rce;
 
 fn main() {
     tauri::Builder::default()

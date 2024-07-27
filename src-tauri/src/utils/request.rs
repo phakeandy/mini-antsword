@@ -64,3 +64,24 @@ pub async fn post_request(
     let body = res.text().await?;
     Ok(body)
 }
+
+pub async fn is_url_return_ok(url: &str, client: &Client) -> bool {
+    let response = client.get(url).send().await;
+    response.is_ok()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use reqwest::Client;
+
+    const URL: &str = "http://127.0.0.1/webshell.php";
+    const KEY: &str = "1";
+
+    #[tokio::test]
+    async fn test_get() {
+        let client = reqwest::Client::new();
+        let res = get_with_key(URL, KEY, "phpinfo();", &client).await.unwrap();
+        println!("res: {:?}", res);
+    }
+}

