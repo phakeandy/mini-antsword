@@ -70,6 +70,31 @@ pub async fn is_url_return_ok(url: &str, client: &Client) -> bool {
     response.is_ok()
 }
 
+/// Deal with url for function `is_url_return_ok` when using function `file_upload`.
+/// It is just for checking file upload success or not.
+/// # Example
+/// ```
+///let url = "http://127.0.0.1/foo/bar.php?d=1234";
+///let filename = "4321";
+///if let Some(new_url) = modify_url(url, filename) {
+///    println!("Modified URL: {}", new_url);
+///} else {
+///    println!("Error processing URL");
+///}
+/// ```
+pub fn modify_url(url: &str, filename: &str) -> Option<String> {
+    // 忽略 '?' 以后的内容
+    let base_url = url.split('?').next()?;
+
+    // 忽略最后一个斜杠 '/' 后的文件名
+    let base_path = std::path::Path::new(base_url).parent()?.to_str()?;
+
+    // 加上新的文件名
+    let new_url = format!("{}/{}", base_path, filename);
+
+    Some(new_url)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -80,7 +105,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get() {
-        let client = reqwest::Client::new();
+        let client = Client::new();
         let res = get_with_key(URL, KEY, "phpinfo();", &client).await.unwrap();
         println!("res: {:?}", res);
     }

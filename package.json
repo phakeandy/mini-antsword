@@ -10,11 +10,13 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1"
+    "@tauri-apps/api": "^1",
+    "jquery": "^3.7.1"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1",
-    "vite": "^5.3.1",
-    "typescript": "^5.2.2"
+    "@types/jquery": "^3.5.30",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.1"
   }
 }

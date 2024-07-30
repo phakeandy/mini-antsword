@@ -4,4 +4,8 @@
 
 基于 Tauri + Vanilla TS 模板
 
-This template should help get you started developing with Tauri in vanilla HTML, CSS and Typescript.
+仓库: [github 仓库地址](https://github.com/phakeandy/mini-antsword)
+
+## 功能:
+
+-   [x] 命令执行

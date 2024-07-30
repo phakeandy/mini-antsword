@@ -22,6 +22,7 @@ url = "2.2"
 rand = "0.8.5"
 regex = "1.10.5"
 md5 = "0.7.0"
+base64 = "0.22.1"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!

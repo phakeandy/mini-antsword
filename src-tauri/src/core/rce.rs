@@ -35,7 +35,7 @@ pub async fn echo_base64_encode_system_command<E: AsRef<str>>(
 
     let rand_separator = encode::md5(rand_separator);
 
-    dbg!(&rand_separator);
+    // dbg!(&rand_separator);
     // 正则匹配
     let pattern = format!(
         "{}(.*?){}",
@@ -43,7 +43,7 @@ pub async fn echo_base64_encode_system_command<E: AsRef<str>>(
         regex::escape(&rand_separator)
     );
 
-    dbg!(&pattern);
+    // dbg!(&pattern);
     dbg!(&post_res_text);
     // dbg!(&get_res_text);
 
