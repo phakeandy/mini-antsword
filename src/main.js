@@ -1,13 +1,14 @@
 // @ts-ignore
-import { invoke } from "@tauri-apps/api/tauri";
+// import { invoke } from "@tauri-apps/api/tauri";
 import { message } from "@tauri-apps/api/dialog";
 import { readTextFile } from "@tauri-apps/api/fs";
+import { WebviewWindow } from "@tauri-apps/api/window";
 
 // import { ask } from "@tauri-apps/api/dialog";
 import $ from "jquery";
 
 import { echoCommandResponse } from "./modules/terminal.js"
-import { stringToBase64, decodeBase64 } from "./modules/utils.js";
+import { decodeBase64 } from "./modules/utils.js";
 import { upload_file } from "./modules/file_upload.js";
 // import { checkUrlAndPassword } from "./modules/utils.js";
 import { BLACK_PAGE_BASE64, BLACK_PAGE_PATH } from "./constent.js";
@@ -34,6 +35,24 @@ function readFile(file, callback) {
   };
 
   reader.readAsText(file);
+}
+
+function openNewWindowIndestructibleBackdoor() {
+  const webview = new WebviewWindow("upload-indestructible-backdoor", {
+    url: "/src/uploadIndestructibleBackdoor.html",
+    title: "上传不死马",
+    width: 480,
+    height: 360,
+  })
+}
+
+function openNewWindowUploadReverseShell() {
+  const webview = new WebviewWindow("upload-indestructible-backdoor", {
+    url: "/src/reverseShell.html",
+    title: "上传反弹shell",
+    width: 480,
+    height: 360,
+  })
 }
 
 // 上传文件
@@ -64,21 +83,28 @@ fileSelector.addEventListener("change", async (event) => {
 });
 
 
+// 上传黑页
 const uploadBlackPageBtn = document.getElementById("uploadBlackPageBtn");
 // @ts-ignore
 uploadBlackPageBtn.addEventListener("click", async function () {
-  // const path = await readTextFile('hack.html', )
-  // const blackPageContent = invoke("read_file_to_string", { path: "./hack.html" });
   const fileContent = decodeBase64(BLACK_PAGE_BASE64);
 
-  console.log(fileContent);
+  // console.log(fileContent);
   upload_file(url, password, fileContent, "hacked.html");
-  // const blackPage = 'src/hack.html';
-  // readFile(blackPageContent, (fileContent) => {
-  //   console.log(file);
-  //   upload_file(url, password, fileContent, "hacked.html");
-  // })
 });
+
+// 反弹 Shell
+const uploadReverseShellBtn = document.getElementById("uploadShellBtn");
+uploadReverseShellBtn?.addEventListener("click", () => {
+  openNewWindowUploadReverseShell();
+})
+
+// 上传不死马
+const uploadIndestructibleBackdoor = document.getElementById("uploadIndestructibleBackdoor");
+uploadIndestructibleBackdoor?.addEventListener("click", async function () {
+  openNewWindowIndestructibleBackdoor();
+  // const fileContent = await invoke("get_indestructible_backdoor_file", {password:, key: })
+})
 
 
 $(function () {
